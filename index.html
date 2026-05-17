@@ -3,182 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>압구정 3구역 조합원 자산 가치 마음 지도</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>압구정 3구역 조합원 소통 플랫폼</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f1f5f9; }
-        .tab-btn.active { background-color: #0f172a; color: #ffffff; border-color: #0f172a; }
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f5f6f7; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { font-size: 20px; text-align: center; color: #1e3a8a; margin-bottom: 25px; }
+        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #e5e7eb; border-radius: 8px; }
+        .section-title { font-weight: bold; margin-bottom: 10px; color: #1e40af; }
+        .btn-group { display: block; }
+        button { width: 100%; padding: 12px; margin: 6px 0; border: 1px solid #cbd5e1; border-radius: 6px; background-color: white; font-size: 14px; cursor: pointer; text-align: left; }
+        button.active { background-color: #2563eb; color: white; border-color: #2563eb; font-weight: bold; }
+        .submit-btn { width: 100%; padding: 15px; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; margin-top: 15px; }
+        .result-box { margin-top: 25px; background-color: #eff6ff; padding: 15px; border-radius: 8px; border: 1px solid #bfdbfe; }
+        .result-line { display: flex; justify-content: space-between; margin: 8px 0; font-size: 14px; }
+        .bar-container { background-color: #e2e8f0; height: 12px; border-radius: 6px; width: 60%; overflow: hidden; }
+        .bar { background-color: #3b82f6; height: 100%; width: 0%; transition: width 0.3s ease; }
     </style>
 </head>
-<body class="text-slate-800 antialiased pb-32">
+<body>
 
-    <header class="bg-slate-950 text-white px-5 py-6 text-center sticky top-0 z-50 shadow-lg border-b border-amber-500/30">
-        <span class="bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full tracking-widest uppercase">Apgujeong Asset IP</span>
-        <h1 class="text-xl font-bold mt-1.5 tracking-tight">압구정 3구역 조합원 자산 마음 지도</h1>
-        <p class="text-xs text-slate-400 mt-1 font-light">시공사 선정 총회 이후, 영구적 가치 보호를 위한 데이터 플랫폼</p>
-    </header>
-
-    <main class="max-w-md mx-auto px-4 mt-6 space-y-6">
-        
-        <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-5 rounded-2xl shadow-xl text-white border border-amber-500/20">
-            <p class="text-[11px] text-amber-400 font-bold tracking-wider uppercase">Apgujeong Luxury & Life Synergy</p>
-            <h2 class="text-base font-bold mt-1">"총회 결과와 무관하게, 우리의 진짜 자산 통제는 이제 시작입니다"</h2>
-            <p class="text-xs text-slate-300 mt-2 leading-relaxed font-light">
-                본 질의 및 피드백 시스템은 특정 시공사 찬반을 넘어, 착공 전 공사비 증가 리스크와 단지 내 위계별 갈등 요소를 투명하게 자산화하여 조합원의 권리를 지키는 영구적 디지털 광장입니다.
-            </p>
+<div class="container">
+    <h1>🏛️ 압구정 3구역 실시간 여론 반영 시스템</h1>
+    
+    <div class="section">
+        <div class="section-title">① 소유하신 단지 권역을 선택해 주세요</div>
+        <div class="btn-group">
+            <button type="button" onclick="selectZone(this, '현대1~7,10,13,14차')">현대 1~7, 10, 13, 14차</button>
+            <button type="button" onclick="selectZone(this, '현대8,11,12차')">현대 8, 11, 12차</button>
+            <button type="button" onclick="selectZone(this, '대림빌라')">대림빌라</button>
         </div>
-
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">1. 검증 조합원 프로필 선택</h3>
-            <div>
-                <label class="text-[11px] font-bold text-slate-500 block mb-1">소유 단지 분기</label>
-                <div class="grid grid-cols-2 gap-2" id="zone-selector">
-                    <button onclick="selectProfile('zone', '67ch', this)" class="tab-btn p-2 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-medium">🏢 현대 6·7차 (대지권 소송 소유주)</button>
-                    <button onclick="selectProfile('zone', '15ch', this)" class="tab-btn p-2 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-medium">🌊 현대 1~5차 (한강조망 소유주)</button>
-                </div>
-            </div>
-            <div class="pt-2 border-t border-slate-100">
-                <label class="text-[11px] font-bold text-slate-500 block mb-1">조합 내 직위 위계</label>
-                <div class="grid grid-cols-3 gap-2" id="rank-selector">
-                    <button onclick="selectProfile('rank', 'normal', this)" class="tab-btn p-2 text-[11px] bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-medium">일반 조합원</button>
-                    <button onclick="selectProfile('rank', 'rep', this)" class="tab-btn p-2 text-[11px] bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-medium">대의원/이사회</button>
-                    <button onclick="selectProfile('rank', 'exec', this)" class="tab-btn p-2 text-[11px] bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-medium">조합 집행부</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                <span>🚩</span> 총회 이후에도 추적해야 할 최대 자산 리스크는?
-            </h3>
-            
-            <div class="space-y-2.5">
-                <label class="flex items-start p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100">
-                    <input type="radio" name="core_issue" value="issue1" class="mt-0.5 text-slate-950 focus:ring-slate-950">
-                    <div class="ml-3">
-                        <span class="text-xs font-bold block text-slate-900">⚖️ 대지지분 소송 및 착공 지연 리스크</span>
-                        <span class="text-[11px] text-slate-500 block mt-0.5">3·4·6·7차 필지 소송 장기화 시 발생하는 물가상승분 부담 주체 확약</span>
-                    </div>
-                </label>
-                <label class="flex items-start p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100">
-                    <input type="radio" name="core_issue" value="issue2" class="mt-0.5 text-slate-950 focus:ring-slate-950">
-                    <div class="ml-3">
-                        <span class="text-xs font-bold block text-slate-900">📈 실착공 전 물가상승 조정방식 (단리/복리)</span>
-                        <span class="text-[11px] text-slate-500 block mt-0.5">착공 지연 기간 누적 상승률 산정 방식 및 지수 비교 기준월 투명화 요구</span>
-                    </div>
-                </label>
-                <label class="flex items-start p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100">
-                    <input type="radio" name="core_issue" value="issue3" class="mt-0.5 text-slate-950 focus:ring-slate-950">
-                    <div class="ml-3">
-                        <span class="text-xs font-bold block text-slate-900">📐 65층 축소에 따른 평당 단가·연면적 정산</span>
-                        <span class="text-[11px] text-slate-500 block mt-0.5">인허가 과정에서 대안설계 변경·축소 시 총공사비 감액 조정 기준 확립</span>
-                    </div>
-                </label>
-                <label class="flex items-start p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100">
-                    <input type="radio" name="core_issue" value="issue4" class="mt-0.5 text-slate-950 focus:ring-slate-950">
-                    <div class="ml-3">
-                        <span class="text-xs font-bold block text-slate-900">💵 외주 인입공사비 등 공사비 미포함 항목</span>
-                        <span class="text-[11px] text-slate-500 block mt-0.5">구역 외 한전·상하수도 인입분담금, 학교용지부담금, 제세공과금 노출</span>
-                    </div>
-                </label>
-            </div>
-
-            <button onclick="submitHeart()" class="w-full py-3.5 bg-slate-950 text-white rounded-xl text-xs font-bold hover:bg-slate-900 tracking-wider cursor-pointer shadow-md">
-                자산 가치 지도에 의견 반영 🚩
-            </button>
-        </div>
-
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-sm font-bold text-slate-900">📊 압구정 3구역 가치 누적 트랙</h3>
-                <span class="text-[10px] bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full font-black">LIVE DATA</span>
-            </div>
-            
-            <div class="space-y-3.5">
-                <div>
-                    <div class="flex justify-between text-[11px] font-medium text-slate-600 mb-1">
-                        <span>⚖️ 대지지분 분쟁 & 착공 지연</span>
-                        <span id="v-issue1" class="font-bold text-slate-900">40% (264명)</span>
-                    </div>
-                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                        <div id="b-issue1" class="bg-rose-500 h-2 transition-all duration-500" style="width: 40%"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-[11px] font-medium text-slate-600 mb-1">
-                        <span>📈 착공 전 물가상승 복리 조정 방어</span>
-                        <span id="v-issue2" class="font-bold text-slate-900">28% (184명)</span>
-                    </div>
-                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                        <div id="b-issue2" class="bg-amber-500 h-2 transition-all duration-500" style="width: 28%"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-[11px] font-medium text-slate-600 mb-1">
-                        <span>📐 65층 조정 평형 정산 규칙</span>
-                        <span id="v-issue3" class="font-bold text-slate-900">18% (118명)</span>
-                    </div>
-                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                        <div id="b-issue3" class="bg-blue-500 h-2 transition-all duration-500" style="width: 18%"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-[11px] font-medium text-slate-600 mb-1">
-                        <span>💵 인입공사비 등 미포함 항목 검증</span>
-                        <span id="v-issue4" class="font-bold text-slate-900">14% (92명)</span>
-                    </div>
-                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                        <div id="b-issue4" class="bg-slate-500 h-2 transition-all duration-500" style="width: 14%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-950/95 backdrop-blur-md border-t border-amber-500/20 px-6 py-4 flex justify-between items-center z-50 rounded-t-2xl shadow-xl">
-        <div class="text-left">
-            <span class="text-[9px] text-amber-400 block font-bold tracking-widest uppercase">Operated by</span>
-            <span class="text-xs text-white font-bold tracking-tight">주식회사 호모사이버스</span>
-        </div>
-        <button onclick="alert('압구정 3구역 조합원 전용 하이엔드 라인업(압구정 뷰티 프리미엄 케어) VIP 멤버십 연동 중...')" class="bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[11px] font-black px-4 py-2 rounded-xl hover:opacity-90 cursor-pointer shadow-md">
-            압구정 뷰티 VIP 인증 🔗
-        </button>
     </div>
 
-    <script>
-        let currentZone = ""; let currentRank = "";
-        let db = { issue1: 264, issue2: 184, issue3: 118, issue4: 92 };
+    <div class="section">
+        <div class="section-title">② 조합 내 직책/위계를 선택해 주세요</div>
+        <div class="btn-group">
+            <button type="button" onclick="selectRank(this, '조합 임원 및 대의원')">조합 임원 및 대의원</button>
+            <button type="button" onclick="selectRank(this, '일반 조합원')">일반 조합원</button>
+        </div>
+    </div>
 
-        function selectProfile(type, val, element) {
-            const container = document.getElementById(type + '-selector');
-            const buttons = container.getElementsByClassName('tab-btn');
-            for(let btn of buttons) { btn.classList.remove('active'); }
-            element.classList.add('active');
-            if(type === 'zone') currentZone = val;
-            if(type === 'rank') currentRank = val;
-        }
+    <div class="section">
+        <div class="section-title">③ 현재 가장 먼저 해결해야 할 핵심 과제는?</div>
+        <div class="btn-group">
+            <button type="button" onclick="selectIssue(this, '공공기여 비율 및 기부채납 조정')">공공기여 비율 및 기부채납 조정</button>
+            <button type="button" onclick="selectIssue(this, '초고층 정비계획 및 일조권 확보')">초고층 정비계획 및 일조권 확보</button>
+            <button type="button" onclick="selectIssue(this, '상가 독립정산제 및 분쟁 예방')">상가 독립정산제 및 분쟁 예방</button>
+            <button type="button" onclick="selectIssue(this, '공사비 증액 최소화 및 시공사 조건')">공사비 증액 최소화 및 시공사 조건</button>
+        </div>
+    </div>
 
-        function submitHeart() {
-            if(!currentZone || !currentRank) {
-                alert("소유 단지와 조합 내 위직위를 모두 선택해 주세요.");
-                return;
-            }
-            const checked = document.querySelector('input[name="core_issue"]:checked');
-            if(!checked) {
-                alert("추적할 자산 리스크 항목을 선택해 주세요.");
-                return;
-            }
-            db[checked.value] += 1;
-            const total = db.issue1 + db.issue2 + db.issue3 + db.issue4;
-            ['issue1', 'issue2', 'issue3', 'issue4'].forEach(key => {
-                const pct = Math.round((db[key] / total) * 100);
-                document.getElementById('v-' + key).innerText = pct + "% (" + db[key] + "명)";
-                document.getElementById('b-' + key).style.width = pct + "%";
-            });
-            alert("조합원님의 가치 데이터가 동기화되었습니다. 하단 호모사이버스 익스클루시브 라운지를 확인하십시오.");
+    <button class="submit-btn" onclick="submitVote()">📊 실시간 클라우드 자산 지도에 의견 반영</button>
+
+    <div class="result-box">
+        <div style="font-weight: bold; margin-bottom: 10px; color: #1e3a8a; text-align: center;">📈 조합원 실시간 투표 집계 상황</div>
+        <div id="results-list"></div>
+    </div>
+</div>
+
+<script>
+    // [중요] 대표님의 Supabase 고유 암호 전선 연결 완료
+    const SUPABASE_URL = "https://ynkbhbhzvkpcnjgffwjy.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlua2JoYmh6dmtwY25qZ2Zmd2p5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NDE1ODIsImV4cCI6MjA5NDUxNzU4Mn0.NKhZ7zRZoKn8qUgXQE0z3KXJo2FrPhAgvngkJhniGzM";
+
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let selectedData = { zone: '', rank: '', core_issue: '' };
+
+    function selectZone(btn, val) { resetActive(btn); btn.classList.add('active'); selectedData.zone = val; }
+    function selectRank(btn, val) { resetActive(btn); btn.classList.add('active'); selectedData.rank = val; }
+    function selectIssue(btn, val) { resetActive(btn); btn.classList.add('active'); selectedData.core_issue = val; }
+    function resetActive(btn) { let btns = btn.parentElement.querySelectorAll('button'); btns.forEach(b => b.classList.remove('active')); }
+
+    // 서버로 데이터를 전송하는 핵심 함수
+    async function submitVote() {
+        if(!selectedData.zone || !selectedData.rank || !selectedData.core_issue) {
+            alert("①, ②, ③번 항목을 모두 선택해 주셔야 클라우드 반영이 가능합니다.");
+            return;
         }
-    </script>
+        
+        const { data, error } = await _supabase.from('votes').insert([
+            { zone: selectedData.zone, rank: selectedData.rank, core_issue: selectedData.core_issue }
+        ]);
+
+        if (error) {
+            alert("연동 실패: " + error.message);
+        } else {
+            alert("🎉 대표님! 압구정 3구역 조합원 자산 지도에 실시간으로 반영되었습니다.");
+            loadResults();
+        }
+    }
+
+    // 서버에서 실시간 통계를 가져와 막대그래프로 그려주는 함수
+    async function loadResults() {
+        const { data, error } = await _supabase.from('votes').select('core_issue');
+        if (error) return;
+
+        let counts = {
+            '공공기여 비율 및 기부채납 조정': 0,
+            '초고층 정비계획 및 일조권 확보': 0,
+            '상가 독립정산제 및 분쟁 예방': 0,
+            '공사비 증액 최소화 및 시공사 조건': 0
+        };
+
+        data.forEach(row => { if(counts[row.core_issue] !== undefined) counts[row.core_issue]++; });
+        let total = data.length || 1;
+
+        let html = '';
+        for (let key in counts) {
+            let pct = Math.round((counts[key] / total) * 100);
+            html += `<div class="result-line">
+                <div style="width:35%; font-size:12px; font-weight:bold;">${key}</div>
+                <div class="bar-container"><div class="bar" style="width:${pct}%"></div></div>
+                <div style="width:10%; text-align:right; font-size:12px; font-weight:bold;">${counts[key]}표 (${pct}%)</div>
+            </div>`;
+        }
+        document.getElementById('results-list').innerHTML = html;
+    }
+    
+    // 페이지 켜지자마자 기존 투표 상황 불러오기
+    window.onload = loadResults;
+</script>
 </body>
 </html>
